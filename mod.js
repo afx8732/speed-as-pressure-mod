@@ -21,6 +21,12 @@ class PreviousEvent {
     }
 }
 
+function smoothVelocity(v) {
+    const r = 2;
+    const v0 = 0.75;
+    return 1 / ( 1 + Math.pow(Math.E, -r*(v-v0)) )
+}
+
 class SpeedAsPressureMod {
     constructor() {
         this.canvas = document.querySelector("#game-canvas canvas");
@@ -147,10 +153,12 @@ class SpeedAsPressureMod {
         };
 
         this.clickAreaElement.onpointermove = (e) => {
-            const rate = previous.update(e);
+            const velocity = previous.update(e);
+            const smoothed = smoothVelocity(velocity);
+            
             this.sendPointerEvent("pointermove", e, {
                 ...e,
-                pressure: rate,
+                pressure: smoothed,
             });
         };
 
