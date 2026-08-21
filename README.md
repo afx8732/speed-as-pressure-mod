@@ -1,6 +1,6 @@
 A mod to let you use your mouse with pressure sensitivity automatically based on the speed of the mouse
 
-Written in javascript, compatible with typo
+Written in javascript, compatible with typo (don't use with Modified Pen Pressure)
 
 #### usage (bookmarklet method)
 
