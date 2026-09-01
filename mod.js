@@ -54,19 +54,15 @@ class SpeedAsPressureMod {
 
     createGUI() {
         const guiElement = document.createElement("div");
-        guiElement.style =
-            "position:fixed;top:0;right:0;width:100px;background-color:gray;color:black;border:1px solid white;padding:8px;";
-        guiElement.innerHTML = "<strong>speed as pressure mod</strong>";
+        guiElement.style = "position:fixed;top:0;left:64px;width:48px;height:48px;background-color:gray;color:black;border:1px solid white;padding:8px;border-radius:48px;background-image: url(\"/img/pen.gif\");scale:80%;color:white;font-size:12px;cursor:pointer";
+        guiElement.innerText = "SAP mod";
+        guiElement.title = "click to disable";
 
-        const turnOffButton = document.createElement("button");
-        turnOffButton.innerText = "DISABLE";
-        turnOffButton.style = "background-color:black;color: white";
-        turnOffButton.onclick = () => {
+        guiElement.onclick = () => {
             this.destroy();
             guiElement.remove();
         };
 
-        guiElement.append(turnOffButton);
         document.body.append(guiElement);
     }
 
