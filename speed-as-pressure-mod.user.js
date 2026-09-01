@@ -4,7 +4,7 @@
 // @version      2026-1-1
 // @description  Uses the pointer speed as the pen pressure in skribbl.io
 // @author       arctic fox
-// @match        https://skribbl.io
+// @match        https://skribbl.io/*
 // @icon         https://skribbl.io/img/pen.gif
 // @grant        none
 // ==/UserScript==
