@@ -35,7 +35,7 @@ class SpeedAsPressureMod {
         this.canvas.setPointerCapture = () => "intercepted";
 
         this.clickAreaElement = this.canvas.cloneNode(true);
-        this.clickAreaElement.style.zIndex = "99";
+        this.clickAreaElement.style.zIndex = "0";
         this.addClickAreaHandlers();
         this.canvas.style.position = "absolute";
 
