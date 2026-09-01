@@ -34,18 +34,14 @@ class SpeedAsPressureMod {
         this.oldPointerCapture = this.canvas.setPointerCapture;
         this.canvas.setPointerCapture = () => "intercepted";
 
-        const canvasRect = this.canvas.getBoundingClientRect();
-        this.clickAreaElement = document.createElement("div");
-        this.clickAreaElement.style.position = "fixed";
-        this.clickAreaElement.style.top = `${canvasRect.top}px`;
-        this.clickAreaElement.style.height = `${canvasRect.height}px`;
-        this.clickAreaElement.style.left = `${canvasRect.left}px`;
-        this.clickAreaElement.style.width = `${canvasRect.width}px`;
+        this.clickAreaElement = this.canvas.cloneNode(true);
+        this.clickAreaElement.style.zIndex = "99";
         this.addClickAreaHandlers();
+        this.canvas.style.position = "absolute";
+
+        this.canvas.parentElement.appendChild(this.clickAreaElement);
 
         this.turnOnPressureSensitivity();
-
-        document.body.append(this.clickAreaElement);
         this.createGUI();
     }
 
@@ -174,6 +170,7 @@ class SpeedAsPressureMod {
     destroy() {
         this.clickAreaElement.remove();
         this.canvas.setPointerCapture = this.oldPointerCapture;
+        this.canvas.style.position = "initial";
 
         const setting = document.getElementById("select-pressure-sensitivity");
         setting.value = this.oldSensitivitySetting;
