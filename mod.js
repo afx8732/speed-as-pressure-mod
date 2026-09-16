@@ -39,7 +39,7 @@ class SpeedAsPressureMod {
         this.addClickAreaHandlers();
         this.canvas.style.position = "absolute";
 
-        this.canvas.parentElement.appendChild(this.clickAreaElement);
+        this.canvas.after(this.clickAreaElement);
 
         this.turnOnPressureSensitivity();
         this.createGUI();
