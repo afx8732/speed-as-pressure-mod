@@ -143,8 +143,8 @@ class SpeedAsPressureMod {
             isDragging = true;
             this.guiElement.setPointerCapture(e.pointerId);
         };
-        // these should be on window but its annoying to clean up in this.destroy so screw it
-        this.guiElement.addEventListener("pointerup", (e) => {
+
+        const window_onPointerUp = (e) => {
             if (isDragging) {
                 isDragging = false;
                 this.guiElement.releasePointerCapture(e.pointerId);
@@ -155,14 +155,19 @@ class SpeedAsPressureMod {
             }
 
             didMoveDuringDrag = false;
-        });
-        this.guiElement.addEventListener("pointermove", (e) => {
+        };
+        window.addEventListener("pointerup", window_onPointerUp);
+        this.runOnDestroy.push(() => window.removeEventListener("pointerup", window_onPointerUp));
+
+        const window_onPointerMove = (e) => {
             if (!isDragging) return;
             didMoveDuringDrag = true;
             position.x = e.pageX;
             position.y = e.pageY;
             updateGuiAbsolutePosition();
-        });
+        };
+        window.addEventListener("pointermove", window_onPointerMove);
+        this.runOnDestroy.push(() => window.removeEventListener("pointermove", window_onPointerMove));
 
         document.body.append(this.guiElement);
     }
