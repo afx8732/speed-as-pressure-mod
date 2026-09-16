@@ -62,6 +62,8 @@ function smoothVelocity(v) {
 
 class SpeedAsPressureMod {
     constructor() {
+        this.runOnDestroy = [];
+
         this.canvas = document.querySelector("#game-canvas canvas");
 
         this.oldPointerCapture = this.canvas.setPointerCapture;
@@ -74,8 +76,42 @@ class SpeedAsPressureMod {
 
         this.canvas.after(this.clickAreaElement);
 
+        this.turnOnHotkey();
         this.turnOnPressureSensitivity();
         this.createGUI();
+    }
+
+    turnOnHotkey() {
+        let isAltHeld = false;
+        let last3keysPressed = "   "; // js vecdeque when???
+        const onKeyDown = (event) => {
+            if (event.key === "Alt" || isAltHeld) {
+                isAltHeld = true;
+            } else {
+                last3keysPressed = "   ";
+                return;
+            }
+
+            if (event.key.length != 1) return;
+
+            last3keysPressed = last3keysPressed[1] + last3keysPressed[2] + event.key;
+            console.log(last3keysPressed);
+
+            if (last3keysPressed === "sap" && isAltHeld) {
+                this.destroy();
+            }
+        }
+        const onKeyUp = (event) => {
+            if (event.key === "Alt") { isAltHeld = false }
+        }
+
+        document.addEventListener("keydown", onKeyDown);
+        document.addEventListener("keyup", onKeyUp);
+
+        this.runOnDestroy.push(() => {
+            document.removeEventListener("keydown", onKeyDown);
+            document.removeEventListener("keyup", onKeyUp);
+        });
     }
 
     turnOnPressureSensitivity() {
@@ -229,6 +265,10 @@ class SpeedAsPressureMod {
     }
 
     destroy() {
+        for (const f of this.runOnDestroy) {
+            f();
+        }
+
         this.clickAreaElement.remove();
         this.canvas.setPointerCapture = this.oldPointerCapture;
         this.canvas.style.position = "initial";
