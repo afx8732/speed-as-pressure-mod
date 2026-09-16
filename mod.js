@@ -21,6 +21,39 @@ class PreviousEvent {
     }
 }
 
+// i love needless abstraction!!!
+class PersistentCoordinates {
+    #x; #y;
+
+    constructor() {
+        this.#x = localStorage.getItem("sap-mod-gui-x") || x;
+        this.#y = localStorage.getItem("sap-mod-gui-y") || y;
+    }
+
+    get x() {
+        return this.#x;
+    }
+
+    get y() {
+        return this.#y;
+    }
+
+    set x(newX) {
+        this.#x = newX;
+        this.#save();
+    }
+
+    set y(newY) {
+        this.#y = newY;
+        this.#save();
+    }
+
+    #save() {
+        localStorage.setItem(`sap-mod-gui-x`, this.#x);
+        localStorage.setItem(`sap-mod-gui-y`, this.#y);
+    }
+}
+
 function smoothVelocity(v) {
     const r = 2;
     const v0 = 0.75;
@@ -53,14 +86,47 @@ class SpeedAsPressureMod {
     }
 
     createGUI() {
+        const position = new PersistentCoordinates();
+
         this.guiElement = document.createElement("div");
-        this.guiElement.style = "position:fixed;top:0;left:64px;width:48px;height:48px;background-color:gray;color:black;border:1px solid white;padding:8px;border-radius:48px;background-image: url(\"/img/pen.gif\");scale:80%;color:white;font-size:12px;cursor:pointer";
+        this.guiElement.style = `position:fixed;width:48px;height:48px;background-color:gray;color:black;border:1px solid white;padding:8px;border-radius:48px;background-image: url(\"/img/pen.gif\");scale:80%;color:white;font-size:12px;cursor:pointer`;
         this.guiElement.innerText = "SAP mod";
         this.guiElement.title = "click to disable";
 
-        this.guiElement.onclick = () => {
-            this.destroy();
+        const updateGuiAbsolutePosition = () => {
+            this.guiElement.style.top = `${position.y - 24}px`;
+            this.guiElement.style.left = `${position.x - 24}px`;
+        }
+        updateGuiAbsolutePosition();
+
+        let isDragging = false;
+        // if false then destroy because its clicked
+        let didMoveDuringDrag = false;
+
+        this.guiElement.onpointerdown = (e) => {
+            isDragging = true;
+            this.guiElement.setPointerCapture(e.pointerId);
         };
+        // these should be on window but its annoying to clean up in this.destroy so screw it
+        this.guiElement.addEventListener("pointerup", (e) => {
+            if (isDragging) {
+                isDragging = false;
+                this.guiElement.releasePointerCapture(e.pointerId);
+            }
+
+            if (!didMoveDuringDrag) {
+                this.destroy();
+            }
+
+            didMoveDuringDrag = false;
+        });
+        this.guiElement.addEventListener("pointermove", (e) => {
+            if (!isDragging) return;
+            didMoveDuringDrag = true;
+            position.x = e.pageX;
+            position.y = e.pageY;
+            updateGuiAbsolutePosition();
+        });
 
         document.body.append(this.guiElement);
     }
