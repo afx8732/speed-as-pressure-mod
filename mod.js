@@ -53,17 +53,16 @@ class SpeedAsPressureMod {
     }
 
     createGUI() {
-        const guiElement = document.createElement("div");
-        guiElement.style = "position:fixed;top:0;left:64px;width:48px;height:48px;background-color:gray;color:black;border:1px solid white;padding:8px;border-radius:48px;background-image: url(\"/img/pen.gif\");scale:80%;color:white;font-size:12px;cursor:pointer";
-        guiElement.innerText = "SAP mod";
-        guiElement.title = "click to disable";
+        this.guiElement = document.createElement("div");
+        this.guiElement.style = "position:fixed;top:0;left:64px;width:48px;height:48px;background-color:gray;color:black;border:1px solid white;padding:8px;border-radius:48px;background-image: url(\"/img/pen.gif\");scale:80%;color:white;font-size:12px;cursor:pointer";
+        this.guiElement.innerText = "SAP mod";
+        this.guiElement.title = "click to disable";
 
-        guiElement.onclick = () => {
+        this.guiElement.onclick = () => {
             this.destroy();
-            guiElement.remove();
         };
 
-        document.body.append(guiElement);
+        document.body.append(this.guiElement);
     }
 
     sendPointerEvent(name, original, detail) {
@@ -171,5 +170,6 @@ class SpeedAsPressureMod {
         const setting = document.getElementById("select-pressure-sensitivity");
         setting.value = this.oldSensitivitySetting;
         setting.dispatchEvent(new Event("change", {}));
+        this.guiElement.remove();
     }
 }
