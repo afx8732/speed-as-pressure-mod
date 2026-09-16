@@ -26,8 +26,8 @@ class PersistentCoordinates {
     #x; #y;
 
     constructor() {
-        this.#x = localStorage.getItem("sap-mod-gui-x") || x;
-        this.#y = localStorage.getItem("sap-mod-gui-y") || y;
+        this.#x = localStorage.getItem("sap-mod-gui-x") || 100;
+        this.#y = localStorage.getItem("sap-mod-gui-y") || 60;
     }
 
     get x() {
