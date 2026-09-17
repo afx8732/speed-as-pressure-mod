@@ -145,15 +145,16 @@ class SpeedAsPressureMod {
         };
 
         const window_onPointerUp = (e) => {
-            if (isDragging) {
-                isDragging = false;
-                this.guiElement.releasePointerCapture(e.pointerId);
+            if (!isDragging) {
+                return
             }
 
             if (!didMoveDuringDrag) {
                 this.destroy();
             }
 
+            isDragging = false;
+            this.guiElement.releasePointerCapture(e.pointerId);
             didMoveDuringDrag = false;
         };
         window.addEventListener("pointerup", window_onPointerUp);
